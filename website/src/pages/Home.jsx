@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [articles, setArticles] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
+  // const [modalShow, setModalShow] = useState(false);
 
   // const handleClose = () => setModalShow(false);
   // const handleShow = () => setModalShow(true);
 
   useEffect(() => {
-    fetch("https://demo-api-one.vercel.app/api/articles")
-      .then((res) => res.json())
-      .then((data) => {
-        setArticles(data.body);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Алдаа гарлаа");
-      });
+    axios.get("http://localhost:8000/Article").then((res) => {
+      setArticles(res.data);
+    });
   }, []);
   // const articles = [
   //   {
@@ -42,13 +38,16 @@ export default function Home() {
     <main>
       <div className="container">
         <div className="row">
-          {articles.map((article) => (
-            <div className="col-md-3 col-sm-6 col-12">
-              <Card title={article.name} image={article.imageUrl} />
+          {articles.map((article, index) => (
+            <div key={index} className="col-md-3 col-sm-6 col-12">
+              <Link to={`post/${article.id}`}>
+                <Card title={article.name} image={article.imageUrl} />
+              </Link>
             </div>
           ))}
         </div>
       </div>
+
       <ToastContainer />
     </main>
   );
